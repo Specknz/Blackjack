@@ -3,17 +3,17 @@ from os import system
 from art import logo
 
 
-def yes_no_prompt(message, yes_return, no_return):
+def yes_no_prompt(message):
     while True:
         try:
             user_input = str(input(message).lower())
+            if user_input == 'y':
+                return True
+            elif user_input == 'n':
+                return False
+            else:
+                print('Please enter y or n')
         except:
-            print('Please enter y or n')
-        if user_input == 'y':
-            return yes_return
-        elif user_input == 'n':
-            return no_return
-        else:
             print('Please enter y or n')
 
 
@@ -77,18 +77,24 @@ def determine_outcome(house_hand, player_hand):
 def hit_hand(hand):
     cards = get_cards()
     return hand.append(random.choice(cards))
-    
+
 
 def hit_or_stand():
-    return yes_no_prompt('\nWould you like to hit?: (y, n) ', True, False)
+    return yes_no_prompt('\nWould you like to hit?: (y, n) ')
 
 
 def restart_game():
-    return yes_no_prompt('Would you like to play agian?: (y, n) ', game(), exit())
+    if yes_no_prompt('Would you like to play agian?: (y, n) '):
+        game()
+    else:
+        exit()
 
 
 def start_game():
-    return yes_no_prompt('Would you like to play?: (y, n) ', game(), exit())
+    if yes_no_prompt('Would you like to play?: (y, n) '):
+        game()
+    else:
+        exit()
 
 
 # Game loop
@@ -124,13 +130,12 @@ def game():
                 else:
                     break
         break
-    # Finish game
+        # Finish game
     determine_outcome(house_hand, player_hand)
 
- 
+
 # Prompt to start game
 start_game()
 
-# Restart game
 while True:
     restart_game()
