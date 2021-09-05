@@ -58,7 +58,7 @@ def determine_outcome(house_hand, player_hand):
     player_total = calculate_hand(player_hand)
     house_total = calculate_hand(house_hand)
     # Lose
-    if house_total > player_total:
+    if house_total > player_total and house_total <= 21:
         print(f'\nYou have lost the hand\n')
         print(f'\nHouse cards: {hand_list_to_string(house_hand)} (Total: {house_total})')
         print(f'\nYour hand: {hand_list_to_string(player_hand)} (Total: {player_total})')
@@ -84,11 +84,11 @@ def hit_or_stand():
 
 
 def restart_game():
-    yes_no_prompt('Would you like to play agian?: (y, n) ', game(), exit())
+    return yes_no_prompt('Would you like to play agian?: (y, n) ', game(), exit())
 
 
 def start_game():
-    yes_no_prompt('Would you like to play?: (y, n) ', game(), exit())
+    return yes_no_prompt('Would you like to play?: (y, n) ', game(), exit())
 
 
 # Game loop
@@ -123,9 +123,10 @@ def game():
                     continue
                 else:
                     break
-        # Finish game
-        determine_outcome(house_hand, player_hand)
         break
+    # Finish game
+    determine_outcome(house_hand, player_hand)
+
  
 # Prompt to start game
 start_game()
