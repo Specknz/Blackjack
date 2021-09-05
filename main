@@ -1,0 +1,135 @@
+import random
+from os import system
+from art import logo
+
+
+def yes_no_prompt(message, yes_return, no_return):
+    while True:
+        try:
+            user_input = str(input(message).lower())
+        except:
+            print('Please enter y or n')
+        if user_input == 'y':
+            return yes_return
+        elif user_input == 'n':
+            return no_return
+        else:
+            print('Please enter y or n')
+
+
+def get_cards():
+    return [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+
+
+def deal_hand():
+    cards = get_cards()
+    return [random.choice(cards) for i in range(2)]
+
+
+def calculate_hand(hand):
+    return sum(hand)
+
+
+def hand_list_to_string(hand):
+    return ''.join(str(card) + ', ' for card in hand).strip(', ')
+
+
+def check_for_ace(hand):
+    for i in range(len(hand)):
+        if hand[i] == 11:
+            hand[i] = 1
+            print('Ace switched to 1 otherwise you would bust!')
+    return hand
+
+
+def print_hand_amount(hand, hand_owner):
+    print(f'{hand_owner} has a hand of: {sum(hand)}')
+
+
+def bust_player_hand(player_hand):
+    player_total = calculate_hand(player_hand)
+    system('cls')
+    print('\nYou are bust! You\'ve gone over 21')
+    print(f'Your hand: {hand_list_to_string(player_hand)} (Total: {player_total})')
+
+
+def determine_outcome(house_hand, player_hand):
+    system('cls')
+    player_total = calculate_hand(player_hand)
+    house_total = calculate_hand(house_hand)
+    # Lose
+    if house_total > player_total:
+        print(f'\nYou have lost the hand\n')
+        print(f'\nHouse cards: {hand_list_to_string(house_hand)} (Total: {house_total})')
+        print(f'\nYour hand: {hand_list_to_string(player_hand)} (Total: {player_total})')
+    # Draw
+    elif house_total == player_total:
+        print(f'\nYou draw.\nYou and the house both had a hand of {player_total})')
+        print(f'\nHouse cards: {hand_list_to_string(house_hand)} (Total: {house_total})')
+        print(f'\nYour hand: {hand_list_to_string(player_hand)} (Total: {player_total})')
+    # Win
+    else:
+        print(f'\nYou have won!')
+        print(f'\nHouse cards: {hand_list_to_string(house_hand)} (Total: {house_total})')
+        print(f'\nYour hand: {hand_list_to_string(player_hand)} (Total: {player_total})')
+
+
+def hit_hand(hand):
+    cards = get_cards()
+    return hand.append(random.choice(cards))
+    
+
+def hit_or_stand():
+    return yes_no_prompt('\nWould you like to hit?: (y, n) ', True, False)
+
+
+def restart_game():
+    yes_no_prompt('Would you like to play agian?: (y, n) ', game(), exit())
+
+
+def start_game():
+    yes_no_prompt('Would you like to play?: (y, n) ', game(), exit())
+
+
+# Game loop
+def game():
+    system('cls')
+    print(logo)
+    player_hand = deal_hand()
+    house_hand = deal_hand()
+    while True:
+        print(f'\nThe house cards: {house_hand[0]}, ?')
+        print(f'Your cards: {hand_list_to_string(player_hand)} (Total: {sum(player_hand)})')
+        # Check if player bust
+        if calculate_hand(player_hand) > 21:
+            # Ace to 1 if player bust
+            check_for_ace(player_hand)
+            # Recheck if player bust
+            if calculate_hand(player_hand) > 21:
+                bust_player_hand(player_hand)
+                break
+            else:
+                continue
+        # Player hit or Stand
+        if hit_or_stand():
+            hit_hand(player_hand)
+            continue
+        # House hit or stand
+        else:
+            while True:
+                if calculate_hand(house_hand) < 17:
+                    hit_hand(house_hand)
+                    print(f'House chose to hit.\nHouses new hand: {house_hand}')
+                    continue
+                else:
+                    break
+        # Finish game
+        determine_outcome(house_hand, player_hand)
+        break
+ 
+# Prompt to start game
+start_game()
+
+# Restart game
+while True:
+    restart_game()
