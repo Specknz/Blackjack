@@ -3,14 +3,14 @@ from os import system
 from art import logo
 
 
-def yes_no_prompt(message):
+def yes_no_prompt(message, yes_return, no_return):
     while True:
         try:
             user_input = str(input(message).lower())
             if user_input == 'y':
-                return True
+                return yes_return
             elif user_input == 'n':
-                return False
+                return no_return
             else:
                 print('Please enter y or n')
         except:
@@ -80,21 +80,15 @@ def hit_hand(hand):
 
 
 def hit_or_stand():
-    return yes_no_prompt('\nWould you like to hit?: (y, n) ')
+    return yes_no_prompt('\nWould you like to hit?: (y, n) ', True, False)
 
 
 def restart_game():
-    if yes_no_prompt('Would you like to play agian?: (y, n) '):
-        game()
-    else:
-        exit()
+    yes_no_prompt('Would you like to play again?: (y, n) ', game, exit)()
 
 
 def start_game():
-    if yes_no_prompt('Would you like to play?: (y, n) '):
-        game()
-    else:
-        exit()
+    yes_no_prompt('Would you like to play?: (y, n) ', game, exit)()
 
 
 # Game loop
@@ -139,3 +133,7 @@ start_game()
 
 while True:
     restart_game()
+
+
+# TO DO
+# Black if hand == 21
